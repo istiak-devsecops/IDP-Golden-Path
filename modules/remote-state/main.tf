@@ -1,32 +1,9 @@
-# Provider
-terraform {
-  required_providers {
-    aws = {
-      source = "hashicorp/aws"
-      version = "~>6.0"
-    }
-  }
-
-  backend "s3" {
-   bucket       = "idp-bucket-istiaks369"
-   key          = "platform/core.tfstate"
-   region       = "us-west-2"
-   encrypt      = true
-   use_lockfile = true  # THIS REPLACES DYNAMODB
-  }
-}
-
-provider "aws" {
-  region = "us-west-2"
-}
-
 # S3 Bucket
 resource "aws_s3_bucket" "idp_bucket" {
   bucket = "${var.storage_name}"
 
   tags = {
     Name        = "My bucket"
-    Environment = "test"
   }
 }
 

@@ -34,7 +34,7 @@ resource "aws_subnet" "private_hub_subnet" {
   cidr_block = each.value               # for each subnet a cidr block
   # Ensure HA zone for the private subnet
   availability_zone = data.aws_availability_zones.available.names[
-    index(var.public_subnets, each.value) % length(data.aws_availability_zones.available.names)
+    index(var.private_subnets, each.value) % length(data.aws_availability_zones.available.names)
   ]
 
   tags = {
@@ -53,16 +53,18 @@ resource "aws_internet_gateway" "igw" {
 
 # Elastic IP
 resource "aws_eip" "hub_eip" {
+  for_each = toset(var.public_subnets) # create an elastic IP for each public subnet
   domain   = "vpc"  # defines if this EIP will be used for vpc
 }
 
 
 # nat gateway
 resource "aws_nat_gateway" "hub_nat" {
-  allocation_id = aws_eip.hub_eip.id    
-  # Logic: Pick the specific public subnet mapped to your first CIDR
+  for_each      = toset(var.public_subnets)
+  allocation_id = aws_eip.hub_eip[each.value].id
+  # Logic: create NAT for each public subnet to ensure HA
   # This ensures the NAT Gateway stays in the 'A' zone consistently.
-  subnet_id     = aws_subnet.public_hub_subnet[var.public_subnets[0]].id
+  subnet_id     = aws_subnet.public_hub_subnet[each.value].id
   
 
   depends_on = [aws_internet_gateway.igw]     # Dependency mapping for igw

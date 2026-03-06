@@ -1,4 +1,4 @@
-# platforms/dev/networking/terragrunt.hcl
+# platforms/dev/hub-vpc/terragrunt.hcl
 
 # 1. Include the Root (Backend/Provider)
 include "root" {
@@ -13,9 +13,14 @@ include "envcommon" {
 
 # 3. Environment Specific Inputs
 inputs = {
-  vpc_cidr    = "10.0.0.0/16"
-  environment = "dev"
-  region      = "us-east-1"
+  inputs = {
+  vpc_name        = "dev-hub-vpc"
+  cidr_block      = "10.0.0.0/16"
+  public_subnets  = ["10.0.1.0/24", "10.0.2.0/24"]
+  private_subnets = ["10.0.3.0/24", "10.0.4.0/24"]
+  environment     = "dev"
+  region          = "us-east-1"
+}
   
   # Merge common tags with environment specific tags
   tags = merge(
