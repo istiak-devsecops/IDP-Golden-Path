@@ -22,7 +22,7 @@ provider "aws" {
 
 # S3 Bucket
 resource "aws_s3_bucket" "idp_bucket" {
-  bucket = "idp-bucket-istiaks369"
+  bucket = "${var.storage_name}"
 
   tags = {
     Name        = "My bucket"
