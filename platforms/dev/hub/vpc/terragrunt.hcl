@@ -27,4 +27,4 @@ inputs = {
       Tier        = "Frontend"
     }
   )
-}
+

@@ -1,5 +1,5 @@
 # platforms/dev/spoke/vpc/terragrunt.hcl
-dependency "hub-vpc" {
+dependency "hub_vpc" {
   config_path = "../../hub/vpc"
 }
 
