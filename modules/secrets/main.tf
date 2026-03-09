@@ -7,7 +7,7 @@ resource "aws_kms_key" "idp_secrets_key" {
 
 # THE KEY POLICY
   policy = jsonencode({
-    Version = "2026-3-07"
+    Version = "2012-10-17"
     Statement = [
       {
         Sid    = "Enable IAM User Permissions" # Gives the account owner control
@@ -33,6 +33,19 @@ resource "aws_kms_key" "idp_secrets_key" {
         ]
         Resource = "*"
       },
+      {
+        Sid = "AllowSpokeAccountUsage"
+        Effect = "Allow"
+        Principal = {
+          AWS = "arn:aws:iam::${var.spoke_account_id}:root" # This allows roles from spoke account to use the key
+        },
+        Action = [
+          "kms:Encrypt",
+          "kms:Decrypt",
+          "kms:GenerateDataKey*"
+        ]
+        Resource = "*"
+      }
     ]
   })
   
